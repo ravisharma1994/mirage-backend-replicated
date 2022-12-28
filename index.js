@@ -35,40 +35,51 @@ app.get('/', async (req, res) => {
     });
 
     try {
-        let response = await axios.post(BASE_URL, data);
 
-        // Keep maing the GET API using we got the final result 
-        let newUrl = BASE_URL + '/' + response.data.uuid;
-        console.log(newUrl);
-        config = getHeanderForGet(newUrl);
-        let resultUlr = await recursiveApiHandler(newUrl);
-        console.log(resultUlr);
-        // console.log(response);
+        var data = JSON.stringify({
+            "version": "f178fa7a1ae43a9a9af01b833b9d2ecf97b1bcb0acfd2dc5dd04895e042863f1",
+            "input": {
+                "prompt": "a photo of an astronaut riding a horse on mars"
+            }
+        });
 
-        res.json({ url: resultUlr });
+        config = {
+            method: 'post',
+            url: BASE_URL,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: data
+        };
+        
+        const result = await axios(config);
+
+        let newUrl = BASE_URL + '/' + result.data.uuid;
+        recursiveApiHandler(req, res , newUrl);
+
     } catch (error) {
-        console.log('Error dusing POST request');
+        console.log('Error dusing POST request', error);
     }
 
 });
 
-const recursiveApiHandler = async (newUrl) => {
+const recursiveApiHandler = (req , res , URL) => {
 
+    const request = require('request');
 
-    let response;
-    try {
-        response = await axios.get(newUrl);
-        if (response.prediction.status !== "succeeded") {
-            setTimeout(() => {
-                return recursiveApiHandler(config);
-            }, 2000);
+    const options = {
+        method: 'GET',
+        url: URL,
+        headers: {
+            'Content-Type': 'application/json'
         }
-        return response.output[0];
-    } catch (error) {
-        console.log('Errr in get');
-    } finally {
-        return recursiveApiHandler(newUrl);
-    }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        res.send(body);
+    });
 
 }
 
