@@ -21,25 +21,19 @@ app.get('/', async (req, res) => {
 
     let config = getHeaderForPost();
 
-    var data = JSON.stringify({
-        "inputs": {
-            "width": 768,
-            "height": 768,
-            "prompt": searchString || "A dream of a distant galaxy, concept art, matte painting , hd, dramatic lighting, detailed",
-            "scheduler": "K_EULER",
-            "num_outputs": "1",
-            "guidance_scale": 7.5,
-            "prompt_strength": 0.8,
-            "num_inference_steps": 20
-        }
-    });
-
     try {
 
         var data = JSON.stringify({
-            "version": "f178fa7a1ae43a9a9af01b833b9d2ecf97b1bcb0acfd2dc5dd04895e042863f1",
-            "input": {
-                "prompt": "a photo of an astronaut riding a horse on mars"
+            "version":  "f178fa7a1ae43a9a9af01b833b9d2ecf97b1bcb0acfd2dc5dd04895e042863f1",
+            "inputs": {
+                "width": 768,
+                "height": 768,
+                "prompt": searchString ||"Iron man as thor",
+                "scheduler": "K_EULER",
+                "num_outputs": "1",
+                "guidance_scale": 7.5,
+                "prompt_strength": 0.8,
+                "num_inference_steps": 20
             }
         });
 
@@ -51,11 +45,13 @@ app.get('/', async (req, res) => {
             },
             data: data
         };
-        
+
         const result = await axios(config);
 
         let newUrl = BASE_URL + '/' + result.data.uuid;
-        recursiveApiHandler(req, res , newUrl);
+        console.log(newUrl);
+
+        recursiveApiHandler(req, res, newUrl);
 
     } catch (error) {
         console.log('Error dusing POST request', error);
@@ -63,7 +59,7 @@ app.get('/', async (req, res) => {
 
 });
 
-const recursiveApiHandler = (req , res , URL) => {
+const recursiveApiHandler = (req, res, URL) => {
 
     const request = require('request');
 
@@ -78,7 +74,13 @@ const recursiveApiHandler = (req , res , URL) => {
     request(options, function (error, response, body) {
         if (error) throw new Error(error);
 
-        res.send(body);
+        setTimeout(() => {
+            body = JSON.parse(body);
+            if (body.prediction.status === 'processing') {
+                return recursiveApiHandler(req, res, URL);
+            }
+            res.send(body.prediction);
+        },1500);
     });
 
 }
