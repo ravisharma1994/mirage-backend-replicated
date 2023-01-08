@@ -7,7 +7,9 @@ const axios = require('axios');
 
 const app = express();
 
-const BASE_URL = "https://replicate.com/api/models/stability-ai/stable-diffusion/versions/f178fa7a1ae43a9a9af01b833b9d2ecf97b1bcb0acfd2dc5dd04895e042863f1/predictions";
+const version = '9936c2001faa2194a261c01381f90e65261879985476014a0a37a334593a05eb'
+// const BASE_URL = `https://replicate.com/api/models/stability-ai/stable-diffusion/versions/${version}/predictions`;
+const BASE_URL = `https://replicate.com/api/models/prompthero/openjourney/versions/${version}/predictions`;
 
 app.use(cors());
 // Configuring body parser middleware
@@ -24,16 +26,15 @@ app.get('/', async (req, res) => {
     try {
 
         var data = JSON.stringify({
-            "version":  "f178fa7a1ae43a9a9af01b833b9d2ecf97b1bcb0acfd2dc5dd04895e042863f1",
+            "version": version,
             "inputs": {
                 "width": 768,
                 "height": 768,
-                "prompt": searchString ||"Iron man as thor",
-                "scheduler": "K_EULER",
-                "num_outputs": "1",
-                "guidance_scale": 7.5,
-                "prompt_strength": 0.8,
-                "num_inference_steps": 20
+                "prompt": searchString || "Iron man as thor",
+                "num_outputs": 1,
+                "guidance_scale": "7",
+                "num_inference_steps": 50,
+                "seed": null
             }
         });
 
@@ -80,7 +81,7 @@ const recursiveApiHandler = (req, res, URL) => {
                 return recursiveApiHandler(req, res, URL);
             }
             res.send(body.prediction);
-        },1500);
+        }, 1500);
     });
 
 }

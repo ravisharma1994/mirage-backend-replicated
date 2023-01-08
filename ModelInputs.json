@@ -1,0 +1,26 @@
+{
+    "openjourny": {
+        "inputs": {
+            "width": 512,
+            "height": 512,
+            "prompt": "mdjrny-v4 iron man as thor 8k",
+            "num_outputs": 1,
+            "guidance_scale": "7",
+            "num_inference_steps": 50,
+            "seed": null
+        }
+    },
+    "stability" : {
+        "version":  "RefertheSite",
+        "inputs": {
+            "width": 768,
+            "height": 768,
+            "prompt": "Iron man as thor",
+            "scheduler": "K_EULER",
+            "num_outputs": "1",
+            "guidance_scale": 7.5,
+            "prompt_strength": 0.8,
+            "num_inference_steps": 20
+        }
+    }
+}
