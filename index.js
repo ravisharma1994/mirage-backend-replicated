@@ -19,17 +19,25 @@ app.use(bodyParser.json());
 app.get('/', async (req, res) => {
     console.log("Just got a request!");
 
+    const ratioMap = {
+        '1:1': {height: 512, width: 512},
+        '2:3': {height: 768, width: 512},
+        '3:2': {height: 512, width: 1024},
+      }
+
     let searchString = req.query.value;
+    let ratio = req.query.ratio;
 
     let config = getHeaderForPost();
+    
 
     try {
 
         var data = JSON.stringify({
             "version": version,
             "inputs": {
-                "width": 768,
-                "height": 768,
+                "width": ratioMap[ratio].height || 512,
+                "height": ratioMap[ratio].width || 512,
                 "prompt": searchString || "Iron man as thor",
                 "num_outputs": 1,
                 "guidance_scale": "7",
