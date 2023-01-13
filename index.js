@@ -36,8 +36,8 @@ app.get('/', async (req, res) => {
         var data = JSON.stringify({
             "version": version,
             "inputs": {
-                "width": ratioMap[ratio].height || 512,
-                "height": ratioMap[ratio].width || 512,
+                "width": ratioMap[ratio].height ,
+                "height": ratioMap[ratio].width ,
                 "prompt": searchString || "Iron man as thor",
                 "num_outputs": 1,
                 "guidance_scale": "7",
