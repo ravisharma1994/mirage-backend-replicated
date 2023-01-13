@@ -98,6 +98,47 @@ app.get('/home', async (req, res) => {
     res.json({ success: true });
 });
 
+app.post('/search', async (req, res) => {
+
+    let config = getHeaderForPost();
+    let { searchText, ratio } = req.body;
+
+    try {
+
+        var data = JSON.stringify({
+            "version": version,
+            "inputs": {
+                "width": ratio.width || 512,
+                "height": ratio.height || 512,
+                "prompt": searchText || "Iron man as thor",
+                "num_outputs": 1,
+                "guidance_scale": "7",
+                "num_inference_steps": 50,
+                "seed": null
+            }
+        });
+
+        config = {
+            method: 'post',
+            url: BASE_URL,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: data
+        };
+
+        const result = await axios(config);
+
+        let newUrl = BASE_URL + '/' + result.data.uuid;
+        console.log(newUrl);
+
+        recursiveApiHandler(req, res, newUrl);
+
+    } catch (error) {
+        console.log('Error dusing POST request', error);
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
