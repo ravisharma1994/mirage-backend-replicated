@@ -21,8 +21,8 @@ app.get('/', async (req, res) => {
 
     const ratioMap = {
         '1:1': {height: 512, width: 512},
-        '2:3': {height: 768, width: 512},
-        '3:2': {height: 512, width: 1024},
+        '2:3': {height: 1024, width: 768},
+        '3:2': {height: 768, width: 1024},
       }
 
     let searchString = req.query.value;
