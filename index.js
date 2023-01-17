@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const { getHeaderForPost, getHeanderForGet } = require('./apiHandler');
 const axios = require('axios');
+const { v4 } = require('uuid');
 
 
 const app = express();
@@ -137,6 +138,38 @@ app.post('/search', async (req, res) => {
     } catch (error) {
         console.log('Error dusing POST request', error);
     }
+});
+
+app.post('/get-upload-url', async (req, res) => {
+
+    let fileName = v4();
+    let { fileExtension } = req.body;
+
+    if (!fileExtension) { fileExtension = 'png' };
+
+    const BASE_URL = `https://replicate.com/api/upload/${fileName}.${fileExtension}?content_type=image%2F${fileExtension}`;
+
+    var request = require('request');
+    var options = {
+        'method': 'POST',
+        'url': BASE_URL,
+        'headers': {
+            'authority': 'replicate.com',
+            'accept': '*/*',
+            'accept-language': 'en-US,en;q=0.5',
+            'content-length': '0',
+            'cookie': 'replicate_anonymous_id=a694b365-27cb-47fd-b6d9-9adc1ae85e65; csrftoken=XkzzATMt16w66wFAcuKei4lMrQWuZNDA; replicate_anonymous_id=7774bbbc-f397-43df-8c61-e23ca20e005e',
+            'origin': 'https://replicate.com',
+            'x-csrftoken': 'XkzzATMt16w66wFAcuKei4lMrQWuZNDA'
+        }
+    };
+    request(options, function (error, response) {
+        if (error) throw new Error(error);
+        console.log(response.body);
+        res.send(response.body);
+    });
+
+
 });
 
 const PORT = process.env.PORT || 3000;
