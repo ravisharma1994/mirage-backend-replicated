@@ -147,21 +147,26 @@ app.post('/get-upload-url', async (req, res) => {
 
     if (!fileExtension) { fileExtension = 'png' };
 
-    const BASE_URL = `https://replicate.com/api/upload/${fileName}.${fileExtension}?content_type=image%2F${fileExtension}`;
+    const BASE_URL = 'https://api.upload.io/v2/accounts/12a1xvS/uploads';
 
     var request = require('request');
     var options = {
         'method': 'POST',
         'url': BASE_URL,
         'headers': {
-            'authority': 'replicate.com',
-            'accept': '*/*',
-            'accept-language': 'en-US,en;q=0.5',
-            'content-length': '0',
-            'cookie': 'replicate_anonymous_id=a694b365-27cb-47fd-b6d9-9adc1ae85e65; csrftoken=XkzzATMt16w66wFAcuKei4lMrQWuZNDA; replicate_anonymous_id=7774bbbc-f397-43df-8c61-e23ca20e005e',
-            'origin': 'https://replicate.com',
-            'x-csrftoken': 'XkzzATMt16w66wFAcuKei4lMrQWuZNDA'
-        }
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'cross-site',
+            'accept': 'application/json',
+            'authorization': 'Basic YXBpa2V5OnB1YmxpY18xMmExeHZTOGpaZExXZ2tuTW1RVFJzbnVUSlZR',
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            "mime": `image/${fileExtension}`,
+            "originalFileName": `${fileName}.${fileExtension}`,
+            "protocol": "1.1",
+            "size": 352050,
+            "tags": []
+        })
     };
     request(options, function (error, response) {
         if (error) throw new Error(error);
