@@ -39,7 +39,7 @@ app.get('/', async (req, res) => {
             "inputs": {
                 "width": ratioMap[ratio].width || 512,
                 "height": ratioMap[ratio].height || 512 ,
-                "prompt": searchString || "Iron man as thor",
+                "prompt": `mdjrny-v4 ${searchString}` || "Iron man as thor",
                 "num_outputs": 1,
                 "guidance_scale": "7",
                 "num_inference_steps": 50,
